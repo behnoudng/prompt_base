@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm text-center">
+        <div class="card-body">
+          <!-- profile icon -->
+          <div class="mb-3">
+            {% comment %} show user uploaded image if exists, otherwise show default {% endcomment %}
+            {% if user.is_authenticated and object.profile.image %}
+              <img src="{{ object.profile.image.url }}" 
+                    alt="Profile Image" 
+                    class="rounded-circle img-fluid"
+                    onerror="this.onerror=null;this.src='{% static \'icons/prof_icon.png\' %}';">
+            {% else %}
+              <img src="{% static 'icons/prof_icon.png' %}" alt="Default profile icon" class="rounded-circle img-fluid">
+            {% endif %}
+          </div>
+
+          <!-- username -->
+          <h4 class="card-title mb-1">{{ user.username }}</h4>
+
+          <!-- email -->
+          <p class="text-muted mb-0">{{ user.email }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
