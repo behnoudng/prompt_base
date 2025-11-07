@@ -11,9 +11,9 @@ class SignUpView(CreateView):
     template_name = "registration/signup.html"
     success_url = reverse_lazy('home')
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect(self.get_success_url())
+        self.object = form.save()
+        login(self.request, self.object)
+        return super().form_valid(form)
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileUpdateForm
