@@ -14,6 +14,11 @@
           </div>
           <h4 class="card-title mb-1">{{ user.username }}</h4>
           <p class="mb-0">{{ user.email }}</p>
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Logout">
+          </form>
+
         </div>
       </div>
     </div>

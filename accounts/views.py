@@ -1,7 +1,8 @@
-from .forms import SignUpForm, ProfileUpdateForm
+from .forms import SignUpForm, ProfileUpdateForm, EmailOrUsernameLoginForm
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
@@ -21,4 +22,6 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('profile')
     def get_object(self):
         return self.request.user
-    
+class CustomLoginView(LoginView):
+    template_name = "registration/login.html"
+    authentication_form = EmailOrUsernameLoginForm
