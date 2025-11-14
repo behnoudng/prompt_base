@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1u79gjsaa6y7dvg=msxdgpodt!_)(3=+5&-m$r9k^%1z--jf#z'
 DEBUG = True
@@ -13,6 +13,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'accounts',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 AUTH_USER_MODEL = 'accounts.User'
 MIDDLEWARE = [
@@ -71,6 +73,10 @@ STATICFILE_DIR = [BASE_DIR / 'static/']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5" 
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
