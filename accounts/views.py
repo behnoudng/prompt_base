@@ -1,11 +1,12 @@
 from .forms import SignUpForm, ProfileUpdateForm, EmailOrUsernameLoginForm
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
+
 class SignUpView(CreateView):
     model = User
     form_class = SignUpForm
