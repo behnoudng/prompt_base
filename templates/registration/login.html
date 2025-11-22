@@ -7,8 +7,12 @@
     <h2 class="mb-4 text-center">Login</h2>
     <form method="post">{% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" value="login" style="margin-right: 10px;">
-        <a href="#">Forgot password?</a>
+        <div class="text-center mb-3">
+            <input type="submit" value="login" class="btn btn-outline-primary w-100" style="margin-right: 10px;">
+        </div>
+        <div>
+            <a href="#">Forgot password?</a> | <a href="{% url 'signup' %}">Don't have an account?</a>
+        </div>
     </form>
 </div>
 {% endblock content %}
