@@ -12,17 +12,27 @@ class SignUpView(CreateView):
     form_class = SignUpForm
     template_name = "registration/signup.html"
     success_url = reverse_lazy('home')
+
     def form_valid(self, form):
         self.object = form.save()
         login(self.request, self.object)
         return super().form_valid(form)
+    
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileUpdateForm
     template_name = 'profile.html'
     success_url = reverse_lazy('profile')
+
+
     def get_object(self):
         return self.request.user
+    
+    def form_valid(self, form):
+        if not form.cleaned_data.get('profile_picture'):
+            self.object.profile_picture = 'profile_pictures/default.png'
+        return super().form_valid(form)
+    
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
     authentication_form = EmailOrUsernameLoginForm

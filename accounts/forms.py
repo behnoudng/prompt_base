@@ -32,3 +32,7 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('profile_picture', 'bio')
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={'accept': 'image/*', 'id': 'id_profile_picture'}),
+            'bio': forms.Textarea(attrs={'rows': 4}),
+        }
