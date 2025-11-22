@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Prompt - PromptBase{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      
+      <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary me-3">
+          <i class="bi bi-arrow-left"></i>
+        </a>
+        <h2 class="mb-0">Add New Prompt</h2>
+      </div>
+
+      <div class="card bg-dark text-white border-secondary">
+        <div class="card-body p-4">
+          
+          <form method="post" id="promptForm">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="mb-4">
+              <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">Title</label>
+              {{ form.title }}
+              {% if form.title.errors %}
+              <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+              {% endif %}
+              <div class="form-text">A clear, descriptive title for your prompt</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.type.id_for_label }}" class="form-label fw-bold">Prompt Type</label>
+              {{ form.type }}
+              {% if form.type.errors %}
+              <div class="text-danger small mt-1">{{ form.type.errors }}</div>
+              {% endif %}
+              <div class="form-text">Choose the format of your prompt</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.content.id_for_label }}" class="form-label fw-bold">Content</label>
+              
+            <div id="editorHint" class="alert mb-2" style="display: none; background-color: #2c3034; border-color: #495057; color: #dee2e6;">
+                <small id="hintText"></small>
+            </div>
+              
+              {{ form.content }}
+              {% if form.content.errors %}
+              <div class="text-danger small mt-1">{{ form.content.errors }}</div>
+              {% endif %}
+              
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="form-text">Write your prompt content</div>
+                <small class="text-muted" id="charCount">0 characters</small>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">
+                Tags <span class="text-muted">(select 2-4)</span>
+              </label>
+              
+              <div id="tagCounter" class="mb-2">
+                <span class="badge bg-secondary" id="selectedCount">0 selected</span>
+                <small class="text-muted ms-2">Minimum: 2 | Maximum: 4</small>
+              </div>
+              
+              <div class="tag-selection-grid">
+                {% for tag in form.tags.field.queryset %}
+                <div class="tag-option">
+                  <input class="form-check-input tag-checkbox" 
+                         type="checkbox" 
+                         name="tags" 
+                         value="{{ tag.id }}" 
+                         id="tag_{{ tag.id }}">
+                  <label class="form-check-label" for="tag_{{ tag.id }}">
+                    {{ tag.name }}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              
+              {% if form.tags.errors %}
+              <div class="text-danger small mt-2">{{ form.tags.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                <i class="bi bi-check-lg me-1"></i>Publish Prompt
+              </button>
+              <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+.tag-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  border: 1px solid var(--bs-secondary);
+}
+
+.tag-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.tag-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tag-option input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.tag-option input[type="checkbox"]:checked + label {
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+.tag-option label {
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+}
+
+#selectedCount {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+#selectedCount.text-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+#selectedCount.text-success {
+  background-color: #198754 !important;
+}
+
+#selectedCount.text-danger {
+  background-color: #dc3545 !important;
+}
+</style>
+
+<script>
+const promptType = document.getElementById('promptType');
+const promptContent = document.getElementById('promptContent');
+const editorHint = document.getElementById('editorHint');
+const hintText = document.getElementById('hintText');
+const charCount = document.getElementById('charCount');
+const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+const selectedCount = document.getElementById('selectedCount');
+const submitBtn = document.getElementById('submitBtn');
+
+const hints = {
+  'json': 'Write valid JSON. Example: {"role": "system", "content": "You are..."}',
+  'md': 'Use Markdown syntax. Example: # Heading, **bold**, *italic*, `code`',
+  'text': 'Plain text format. No special formatting required.'
+};
+
+promptType.addEventListener('change', function() {
+  const type = this.value;
+  if (hints[type]) {
+    hintText.textContent = hints[type];
+    editorHint.style.display = 'block';
+  }
+});
+
+promptContent.addEventListener('input', function() {
+  charCount.textContent = `${this.value.length} characters`;
+});
+
+function updateTagCounter() {
+  const checked = document.querySelectorAll('.tag-checkbox:checked').length;
+  selectedCount.textContent = `${checked} selected`;
+  
+  selectedCount.className = 'badge';
+  if (checked === 0) {
+    selectedCount.classList.add('bg-secondary');
+  } else if (checked < 2) {
+    selectedCount.classList.add('bg-warning', 'text-dark');
+  } else if (checked <= 4) {
+    selectedCount.classList.add('bg-success');
+  } else {
+    selectedCount.classList.add('bg-danger');
+  }
+  
+  tagCheckboxes.forEach(checkbox => {
+    if (!checkbox.checked && checked >= 4) {
+      checkbox.disabled = true;
+      checkbox.parentElement.style.opacity = '0.5';
+    } else {
+      checkbox.disabled = false;
+      checkbox.parentElement.style.opacity = '1';
+    }
+  });
+  
+  // Update submit button state
+  if (checked >= 2 && checked <= 4) {
+    submitBtn.disabled = false;
+  } else {
+    submitBtn.disabled = true;
+  }
+}
+
+tagCheckboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', updateTagCounter);
+});
+
+if (promptType.value && hints[promptType.value]) {
+  hintText.textContent = hints[promptType.value];
+  editorHint.style.display = 'block';
+}
+
+updateTagCounter();
+</script>
+{% endblock %}
