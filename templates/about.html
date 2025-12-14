@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}About{% endblock title %}
 {% block content %}
-<div class="container text-center mt-5" style="max-width: 700px;">
+<div class="container text-center mt-5" style="max-width: 720px;">
     <h1 class="fw-bold mb-4">About PromptBase</h1>
-    <p class="text-secondary mb-5">
-        PromptBase is a community-driven space built for sharing, saving, and exploring creative prompts.  
-        Whether you're an AI enthusiast, a developer, or just curious, this is where ideas meet inspiration.
+
+    <p class="text-secondary mb-4">
+        PromptBase is an open-source, community-driven project for sharing, saving, and discovering high-quality prompts.
+        It is built to stay simple, transparent, and owned by its contributors rather than by a company.
     </p>
-    <hr class="border-secondary mb-5" style="opacity: 0.3;">
-    <h2 class="h4 mb-3">Contact</h2>
-    <p class="text-secondary">
-        For support or inquiries, reach out to us at  
-        <span class="text-light fw-semibold">hi@promptbase.ir</span>
+
+    <hr class="border-secondary my-5" style="opacity: 0.3;">
+
+    <h2 class="h4 mb-3">Open Source</h2>
+    <p class="text-secondary mb-3">
+        This project is released under the <span class="text-light fw-semibold">MIT License</span>.
+        You are free to use, modify, distribute, and build upon it with minimal restrictions.
+    </p>
+
+    <p class="text-secondary mb-4">
+        The source code, issues, and future roadmap are publicly available on GitHub.
+        Contributions, forks, and critical feedback are welcome.
+    </p>
+
+    <a href="https://github.com/behnoudng/prompt_base" target="_blank"
+       class="btn btn-outline-light">
+        <i class="bi bi-github me-2"></i>View on GitHub
+    </a>
+
+    <hr class="border-secondary my-5" style="opacity: 0.3;">
+
+    <p class="text-muted small">
+        Built by developers who believe prompts should be shared, not locked behind paywalls.
     </p>
 </div>
 {% endblock content %}
