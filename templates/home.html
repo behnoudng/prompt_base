@@ -32,7 +32,7 @@
         </div>
         
         <p class="card-text text-muted small mb-2">
-          {{ prompt.content|truncatewords:25 }}
+          {{ prompt.content|truncatewords:15 }}
         </p>
         
         <div class="d-flex justify-content-between align-items-center">
@@ -142,6 +142,8 @@
 
 <script>
 let currentPromptContent = '';
+
+
 
 async function showPromptModal(promptId) {
   try {
