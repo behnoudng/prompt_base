@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="my-prompts">
+  <h1>My Prompts</h1>
+
+  {% if prompts %}
+    <ul class="prompt-list">
+      {% for prompt in prompts %}
+        <li class="prompt-item">
+          <div class="prompt-title">{{ prompt.title }}</div>
+          <div class="prompt-body">{{ prompt.content }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No prompts yet.</p>
+  {% endif %}
+</div>
+
+<style>
+.my-prompts {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.my-prompts h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.prompt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.prompt-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.prompt-title {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.prompt-body {
+  color: #555;
+  line-height: 1.6;
+}
+
+.empty {
+  color: #888;
+}
+</style>
+{% endblock %}

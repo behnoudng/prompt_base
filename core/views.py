@@ -41,3 +41,11 @@ def prompt_detail_ajax(request, pk):
         'created_at': prompt.created_at.strftime('%Y-%m-%d %H:%M'),
         'tags': [tag.name for tag in prompt.tags.all()],
     })
+
+class MyPromptsView(LoginRequiredMixin, ListView):
+    model = Prompt
+    template_name = 'my_prompts.html'
+    context_object_name = 'prompts'
+
+    def get_queryset(self):
+        return Prompt.objects.filter(creator=self.request.user)
