@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 User = get_user_model()
 
@@ -42,3 +43,11 @@ class Prompt(models.Model):
                 raise ValidationError("A prompt must have at least 2 tags.")
             if tag_count > 4:
                 raise ValidationError("A prompt can have at most 4 tags.")
+            
+class Bookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'prompt')
