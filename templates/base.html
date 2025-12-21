@@ -317,7 +317,7 @@
         <div class="collapse" id="userMenu">
             <a href="{% url 'profile' %}" class="subtab">Profile</a>
             <a href="{% url 'my_prompts' %}" class="subtab">My Prompts</a>
-            <a href="#" class="subtab">Bookmarks</a>
+            <a href="{% url 'bookmarks' %}" class="subtab">Bookmarks</a>
         </div>
         {% else %}
         <button class="collapse-toggle" data-bs-toggle="collapse" data-bs-target="#userMenu" aria-expanded="false">

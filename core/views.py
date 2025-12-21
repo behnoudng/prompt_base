@@ -3,7 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from .models import Prompt, Tag
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from .models import Prompt, Tag, Bookmark
 from .forms import PromptForm
 
 class HomeView(ListView):
@@ -14,6 +16,15 @@ class HomeView(ListView):
     
     def get_queryset(self):
         return Prompt.objects.select_related('creator').prefetch_related('tags').all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            bookmarked_ids = Bookmark.objects.filter(user=self.request.user).values_list('prompt_id', flat=True)
+            context['bookmarked_ids'] = list(bookmarked_ids)
+        else:
+            context['bookmarked_ids'] = []
+        return context
 
 class AboutView(TemplateView):
     template_name = 'about.html'
@@ -49,3 +60,24 @@ class MyPromptsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Prompt.objects.filter(creator=self.request.user)
+    
+    
+class BookmarksView(LoginRequiredMixin, ListView):
+    model = Bookmark
+    template_name = 'bookmarks.html'
+    context_object_name = 'bookmarks'
+    
+    def get_queryset(self):
+        return Bookmark.objects.filter(user=self.request.user).select_related('prompt__creator').prefetch_related('prompt__tags').order_by('-created_at')
+
+@login_required
+@require_POST
+def toggle_bookmark(request, pk):
+    prompt = get_object_or_404(Prompt, pk=pk)
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, prompt=prompt)
+    
+    if not created:
+        bookmark.delete()
+        return JsonResponse({'bookmarked': False})
+    
+    return JsonResponse({'bookmarked': True})

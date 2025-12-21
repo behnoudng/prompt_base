@@ -26,6 +26,11 @@
     <div class="prompt-card" onclick="showPromptModal({{ prompt.id }})">
       <div class="prompt-header">
         <h6 class="prompt-title">{{ prompt.title }}</h6>
+        {% if user.is_authenticated %}
+        <button class="btn btn-link bookmark-btn p-0" data-prompt-id="{{ prompt.id }}" data-bookmarked="{% if prompt.id in bookmarked_ids %}true{% else %}false{% endif %}">
+            <i class="bi {% if prompt.id in bookmarked_ids %}bi-bookmark-fill text-warning{% else %}bi-bookmark{% endif %}" style="font-size: 1.2rem;"></i>
+        </button>
+        {% endif %}
         <span class="prompt-type">{{ prompt.get_type_display }}</span>
       </div>
       
@@ -273,5 +278,38 @@ function copyPrompt(event) {
     alert('Failed to copy prompt');
   });
 }
+</script>
+<script>
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+    btn.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        const promptId = this.dataset.promptId;
+        const icon = this.querySelector('i');
+        
+        try {
+            const response = await fetch(`/prompt/${promptId}/bookmark/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.bookmarked) {
+                icon.classList.remove('bi-bookmark');
+                icon.classList.add('bi-bookmark-fill', 'text-warning');
+                this.dataset.bookmarked = 'true';
+            } else {
+                icon.classList.remove('bi-bookmark-fill', 'text-warning');
+                icon.classList.add('bi-bookmark');
+                this.dataset.bookmarked = 'false';
+            }
+        } catch (error) {
+            console.error('Bookmark error:', error);
+        }
+    });
+});
 </script>
 {% endblock %}
