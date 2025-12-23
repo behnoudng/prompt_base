@@ -28,7 +28,7 @@
         <h6 class="prompt-title">{{ prompt.title }}</h6>
         {% if user.is_authenticated %}
         <button class="btn btn-link bookmark-btn p-0" data-prompt-id="{{ prompt.id }}" data-bookmarked="{% if prompt.id in bookmarked_ids %}true{% else %}false{% endif %}">
-            <i class="bi {% if prompt.id in bookmarked_ids %}bi-bookmark-fill text-warning{% else %}bi-bookmark{% endif %}" style="font-size: 1.2rem;"></i>
+            <i class="bi {% if prompt.id in bookmarked_ids %}bi-bookmark-fill text-primary{% else %}bi-bookmark{% endif %}" style="font-size: 1.2rem;"></i>
         </button>
         {% endif %}
         <span class="prompt-type">{{ prompt.get_type_display }}</span>
@@ -299,10 +299,10 @@ document.querySelectorAll('.bookmark-btn').forEach(btn => {
             
             if (data.bookmarked) {
                 icon.classList.remove('bi-bookmark');
-                icon.classList.add('bi-bookmark-fill', 'text-warning');
+                icon.classList.add('bi-bookmark-fill', 'text-primary');
                 this.dataset.bookmarked = 'true';
             } else {
-                icon.classList.remove('bi-bookmark-fill', 'text-warning');
+                icon.classList.remove('bi-bookmark-fill', 'text-primary');
                 icon.classList.add('bi-bookmark');
                 this.dataset.bookmarked = 'false';
             }

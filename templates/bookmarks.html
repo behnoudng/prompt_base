@@ -7,7 +7,7 @@
 <div class="container-fluid px-4 py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0 text-white">
-            <i class="bi bi-bookmark-fill text-warning me-2"></i>My Bookmarks
+            <i class="bi bi-bookmark-fill text-primary me-2"></i>My Bookmarks
         </h2>
         <span class="small">{{ bookmarks|length }} bookmarks</span>
     </div>
@@ -19,7 +19,7 @@
             <div class="prompt-header">
                 <h6 class="prompt-title">{{ bookmark.prompt.title }}</h6>
                 <button class="btn btn-link bookmark-btn p-0" data-prompt-id="{{ bookmark.prompt.id }}">
-                    <i class="bi bi-bookmark-fill text-warning" style="font-size: 1.2rem;"></i>
+                    <i class="bi bi-bookmark-fill text-primary" style="font-size: 1.2rem;"></i>
                 </button>
                 <span class="prompt-type">{{ bookmark.prompt.get_type_display }}</span>
             </div>
